@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Retail Marketing Intelligence - Local Data
+# Raw and generated datasets are stored locally
+data/
+
+# macOS system files
+.DS_Store
