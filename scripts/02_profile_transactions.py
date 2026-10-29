@@ -15,3 +15,7 @@ print(df.dtypes)
 # 3. Missing values
 print("\nMISSING VALUES:")
 print(df.isnull().sum())
+
+# 4. Duplicate rows
+print("\nDUPLICATE ROWS:")
+print("Exact duplicate rows:", df.duplicated().sum())
