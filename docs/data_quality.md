@@ -101,3 +101,55 @@ The exact causes cannot be established from the available evidence.
 ### Status
 
 Investigated. No cleaning transformation applied.
+
+## Finding 3: Positive Quantity with Zero Sales
+
+### Observation
+
+4,451 transaction records have positive quantities but zero sales values.
+
+### Discount Investigation
+
+Of these records:
+
+- 3,748 have negative retailer discounts.
+- 43 have nonzero manufacturer coupon discounts.
+- 702 have no recorded discounts.
+
+These categories are not mutually exclusive.
+
+### Investigation of Records Without Discounts
+
+Among the 702 records without recorded discounts:
+
+- 444 belong to the COUP/STR & MFG department.
+- 231 belong to GROCERY.
+- The remaining 27 belong to other departments.
+
+Of the 231 grocery records, 225 belong to BAG SNACKS.
+
+### Snack Product Investigation
+
+The 225 zero-sales snack records involve 18 distinct products.
+
+All 18 products also appear in positive-sales transactions, with 1,132 positive-sales transaction lines in total.
+
+### Interpretation
+
+The coupon-related entries appear to represent a different transaction type from ordinary merchandise purchases.
+
+Zero-sales snack transactions occur for products that are also sold for positive amounts.
+
+The cause of these zero-sales transactions cannot be established from the available data.
+
+### Data Quality Decision
+
+- Retain all records at this stage.
+- Flag zero-sales transactions for analytical consideration.
+- Distinguish coupon-related entries from physical merchandise when calculating item counts.
+- Do not classify zero-sales snack records as promotional giveaways without further evidence.
+- Preserve recorded sales values rather than imputing prices.
+
+### Status
+
+Investigated. No cleaning transformation applied.
