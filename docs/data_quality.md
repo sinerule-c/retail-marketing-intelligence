@@ -54,3 +54,50 @@ Further validation may be required before calculating quantity-based metrics.
 ### Status
 
 Investigated. No cleaning transformation applied.
+
+## Finding 2: Zero Quantity with Positive Sales
+
+### Observation
+
+The transaction dataset contains:
+
+- 14,399 records with zero quantity and zero sales.
+- 67 records with zero quantity and positive sales.
+- 4,451 records with positive quantity and zero sales.
+
+### Investigation
+
+Of the 67 zero-quantity records with positive sales:
+
+- 29 have extremely small positive sales values below 0.0000001, consistent with floating-point precision artefacts.
+- 38 have positive sales values after rounding to two decimal places.
+
+The 38 records are distributed across:
+
+- Produce: 17
+- Drug GM: 11
+- Grocery: 7
+- Deli: 2
+- Meat: 1
+
+The highest observed sales value among these records is $5.82, associated with a grapes product.
+
+### Interpretation
+
+Some zero-quantity records may reflect product measurement conventions, particularly for weighted produce.
+
+However, these records also occur in non-produce departments.
+
+The exact causes cannot be established from the available evidence.
+
+### Data Quality Decision
+
+- Retain the original transaction records.
+- Flag zero-quantity records with positive sales for analytical considerations.
+- Exclude zero-quantity records from calculations requiring division by quantity.
+- Do not automatically exclude these records from revenue calculations.
+- Investigate zero-sales transactions seperately.
+
+### Status
+
+Investigated. No cleaning transformation applied.
