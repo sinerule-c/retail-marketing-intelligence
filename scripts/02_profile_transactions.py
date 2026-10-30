@@ -145,3 +145,91 @@ print(unusual_with_products[
     .head(10)
     .to_string(index=False)
 )
+
+# 12. Investigate positive quantity with zero sales
+
+zero_sales_records = df[
+    (df["QUANTITY"] > 0) &
+    (df["SALES_VALUE"] == 0)
+]
+
+print("\nPOSITIVE QUANTITY WITH ZERO SALES:")
+
+print(
+    zero_sales_records[
+        ["PRODUCT_ID", "QUANTITY", "SALES_VALUE", "RETAIL_DISC", "COUPON_DISC", "COUPON_MATCH_DISC"]
+    ].head(10).to_string(index=False)
+)
+
+# 13. Investigate discount patterns in zero-sales records
+
+print("\nZERO-SALES DISCOUNT ANALYSIS:")
+
+print("Records with retailer discounts:", (zero_sales_records["RETAIL_DISC"] < 0).sum())
+
+print("Records with manufacturer coupons:", (zero_sales_records["COUPON_DISC"] != 0).sum())
+
+no_discounts = (
+    (zero_sales_records["RETAIL_DISC"] == 0) &
+    (zero_sales_records["COUPON_DISC"] == 0) &
+    (zero_sales_records["COUPON_MATCH_DISC"] == 0)
+)
+
+print("Records with no recorded discounts:", no_discounts.sum())
+
+# 14. Investigate zero-sales records without discounts
+
+no_discount_records = zero_sales_records[no_discounts]
+
+no_discount_products = no_discount_records.merge(
+    products,
+    on="PRODUCT_ID",
+    how="left"
+)
+
+print("\nZERO SALES WITHOUT DISCOUNTS BY DEPARTMENT:")
+
+print(no_discount_products["DEPARTMENT"].value_counts(dropna=False))
+
+# 15. Investigate zero-sales records in the coupon department
+
+coupon_records = no_discount_products[no_discount_products["DEPARTMENT"] == "COUP/STR & MFG"]
+
+print("\nCOUPON DEPARTMENT RECORDS:")
+
+print(coupon_records[["PRODUCT_ID", "COMMODITY_DESC", "SUB_COMMODITY_DESC", "QUANTITY", "SALES_VALUE"]].head(10).to_string(index=False))
+
+# 16. Investigate grocery records with zero sales
+
+grocery_records = no_discount_products[no_discount_products["DEPARTMENT"] == "GROCERY"]
+
+print("\nGROCERY RECORDS WITH ZERO SALES:")
+
+print(grocery_records[["PRODUCT_ID", "COMMODITY_DESC", "SUB_COMMODITY_DESC", "QUANTITY", "SALES_VALUE"]].head(10).to_string(index=False))
+
+# 17. Identify grocery categories with zero sales
+
+print("\nZERO-SALES GROCERY COMMODITIES:")
+
+print(grocery_records["COMMODITY_DESC"].value_counts(dropna=False))
+
+# 18. Investigate whether zero-sales snacks are sold normally
+
+# Identify snack products with zero-sales records
+snack_records = grocery_records[grocery_records["COMMODITY_DESC"] == "BAG SNACKS"]
+
+snack_ids = snack_records["PRODUCT_ID"].unique()
+
+# Find all transactions involving these products
+snack_transactions = df[df["PRODUCT_ID"].isin(snack_ids)]
+
+print("Distinct snack products:", len(snack_ids))
+
+print("Products also sold for positive amounts:",
+      snack_transactions.loc[
+          snack_transactions["SALES_VALUE"] > 0,
+          "PRODUCT_ID"
+      ].nunique()
+)
+
+print("Positive-sales transaction lines:", (snack_transactions["SALES_VALUE"] > 0).sum())
