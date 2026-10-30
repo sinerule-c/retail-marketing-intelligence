@@ -69,3 +69,79 @@ print(
     "Maximum quantity excluding gasoline:",
     df.loc[~gas_mask, "QUANTITY"].max()
 )
+
+# 9. Investigate zero quantities and zero sales
+
+zero_qty = df["QUANTITY"] == 0
+zero_sales = df["SALES_VALUE"] == 0
+
+print("\nZERO QUANTITY AND SALES INVESTIGATION:")
+
+print(
+    "Both quantity and sales are zero:",
+    (zero_qty & zero_sales).sum()
+)
+
+print(
+    "Zero quantity, postive sales:",
+    (zero_qty & ~zero_sales).sum()
+)
+
+print(
+    "Positive quantity, zero sales:",
+    (~zero_qty & zero_sales).sum()
+)
+
+# 10. Investigate zero quantity with positive sales
+
+unusual_records = df[
+    (df["QUANTITY"] == 0) &
+    (df["SALES_VALUE"] > 0)
+]
+
+print("\nZERO QUANTITY WITH POSITIVE SALES:")
+print(unusual_records.head(10).to_string(index=False))
+
+tiny_sales = unusual_records[unusual_records["SALES_VALUE"] < 0.00001]
+
+print("\nExtremely small positive sales:", len(tiny_sales))
+
+print(tiny_sales[["PRODUCT_ID", "SALES_VALUE"]].head(10).to_string(index=False))
+
+for value in tiny_sales["SALES_VALUE"].head(10):
+    print(repr(value))
+
+# Investigate zero-quantity records with meaningful positive sales
+
+meaningful_sales = unusual_records[unusual_records["SALES_VALUE"].round(2) > 0]
+
+print("\nZero quantity with positive sales after rounding:")
+print(len(meaningful_sales))
+
+print("\nFIRST 10 RECORDS:")
+print(meaningful_sales[["PRODUCT_ID", "QUANTITY", "SALES_VALUE"]].head(10).to_string(index=False))
+
+print("\n")
+print(products[products["PRODUCT_ID"] == 866871].to_string(index=False))
+
+# Join unusual transactions with product information
+unusual_with_products = meaningful_sales.merge(
+    products,
+    on="PRODUCT_ID",
+    how="left"
+)
+
+# Count unusual transactions by department
+print(unusual_with_products["DEPARTMENT"].value_counts(dropna=False))
+
+# 11. Examine unusual transactions with the highest sales
+
+print("\nTOP 10 ZERO-QUANTITY TRANSACTIONS BY SALES:")
+
+print(unusual_with_products[
+    ["PRODUCT_ID", "DEPARTMENT", "SUB_COMMODITY_DESC", "QUANTITY", "SALES_VALUE"]
+    ]
+    .sort_values("SALES_VALUE", ascending=False)
+    .head(10)
+    .to_string(index=False)
+)
