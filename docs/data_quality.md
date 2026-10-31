@@ -286,3 +286,34 @@ This validates the format but does not independently verify the accuracy of each
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 7: Product Referential Integrity
+
+### Objective
+
+Validate the relationship between transaction_data.csv and product.csv using PRODUCT_ID.
+
+### Validation Results
+
+- Duplicate PRODUCT_ID values in product.csv: 0
+- Transaction rows with unmatched PRODUCT_ID: 0
+- Distinct unmatched PRODUCT__ID values: 0
+
+### Interpretation
+
+All transaction product IDs have corresponding records in the product catalogue.
+
+PRODUCT_ID is unique in product.csv, supporting a many-to-one relationship between transaction records and product information.
+
+These findings indicate that joining the tables on PRODUCT_ID should not introduce unmatched records or duplicate transaction rows.
+
+### Data Quality Decision
+
+- Retain all product IDs.
+- No correction or imputation is required.
+- Use PRODUCT_ID as the join key for transaction and product analysis.
+- Validate row counts after performing joins.
+
+### Status
+
+Validated. No cleaning transformation required.
