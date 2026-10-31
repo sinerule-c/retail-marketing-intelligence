@@ -233,3 +233,81 @@ print("Products also sold for positive amounts:",
 )
 
 print("Positive-sales transaction lines:", (snack_transactions["SALES_VALUE"] > 0).sum())
+
+# 19. Investigate discount values
+
+discount_cols = ["RETAIL_DISC", "COUPON_DISC", "COUPON_MATCH_DISC"]
+
+print("\nDISCOUNT SUMMARY:")
+print(df[discount_cols].describe())
+
+for col in discount_cols:
+    print(f"\n{col}")
+    print("Negative values:", (df[col] < 0).sum())
+    print("Zero values:", (df[col] == 0).sum())
+    print("Positive values:", (df[col] > 0).sum())
+
+# 20. Investigate positive retailer discounts
+
+positive_retail = df[df["RETAIL_DISC"] > 0]
+
+print("\nPOSITIVE RETAILER DISCOUNTS:")
+print("Number of records:", len(positive_retail))
+
+print(
+    positive_retail[
+        ["PRODUCT_ID", "QUANTITY", "SALES_VALUE", "RETAIL_DISC", "COUPON_DISC", "COUPON_MATCH_DISC"]
+    ].sort_values("RETAIL_DISC", ascending=False).head(10).to_string(index=False)
+)
+
+# 21. Examine positive retailer discounts with zero quantities
+
+zero_qty_positive_retail = positive_retail[
+    positive_retail["QUANTITY"] == 0
+]
+
+print("Total positive retail discounts:", len(positive_retail))
+
+print("Positive retail discounts with zero quantity:", len(zero_qty_positive_retail))
+
+print("Zero-quantity records where retail discount equals sales:",
+      (zero_qty_positive_retail["RETAIL_DISC"].round(2)
+       == zero_qty_positive_retail["SALES_VALUE"].round(2)
+     ).sum()
+)
+
+# 22. Investigate exceptions to the positive discount pattern
+
+exceptions = positive_retail[
+    (positive_retail["QUANTITY"] > 0) |
+    (
+        (positive_retail["QUANTITY"] == 0) &
+        (positive_retail["RETAIL_DISC"].round(2) != positive_retail["SALES_VALUE"].round(2))
+    )
+]
+
+print("\nPOSITIVE DISCOUNT EXCEPTIONS:")
+
+print(
+    exceptions[
+        ["PRODUCT_ID", "QUANTITY", "SALES_VALUE", "RETAIL_DISC"]
+    ].to_string(index=False)
+)
+
+# 23. Inspect positive discount exceptions at full precision
+
+print("\nPOSITIVE DISCOUNT EXCEPTIONS - FULL PRECISION:")
+
+print(
+    exceptions[["PRODUCT_ID", "QUANTITY", "SALES_VALUE", "RETAIL_DISC"]].to_string(index=False, float_format=lambda x: f"{x:.17g}")
+)
+
+# 24. Distinguish meaningful positive discounts from precision artefacts
+
+retail_disc = df["RETAIL_DISC"]
+
+print("Positive discounts before rounding:", (retail_disc > 0).sum())
+
+print("Positive discounts after rounding:", (retail_disc.round(2) > 0).sum())
+
+print("Tiny positive discounts:", ((retail_disc > 0) & (retail_disc.round(2) == 0)).sum())
