@@ -369,3 +369,17 @@ invalid_time = (
 )
 
 print("Invalid transaction times:", invalid_time.sum())
+
+# 30. Validate product IDs across tables
+
+print("\nPRODUCT REFERENTIAL INTEGRITY:")
+
+# Check duplicate product IDs in the product catalogue
+print("Duplicate product IDs in catalogue:", products["PRODUCT_ID"].duplicated().sum())
+
+# Identify transaction products missing from the catalogue
+missing_products = ~df["PRODUCT_ID"].isin(products["PRODUCT_ID"])
+
+print("Transaction rows with unmatched product IDs:", missing_products.sum())
+
+print("Distinct unmatched product IDs:", df.loc[missing_products, "PRODUCT_ID"].nunique())
