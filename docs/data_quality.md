@@ -206,3 +206,48 @@ The remaining 10 positive values require further investigation and should not au
 ### Status
 
 Investigated. No cleaning transformation applied.
+
+## Finding 5: Transaction Time Consistency
+
+### Observation
+
+The transaction dataset contains:
+
+- 711 distinct days (Day 1 to Day 711).
+- 102 distinct weeks (Week 1 to Week 102).
+- No zero or negative day/week values.
+
+### Investigation
+
+An initial validation assumed that Week 1 contained Days 1-7.
+
+This produced 694,450 mismatched records.
+
+Further investigation of week boundaries showed:
+
+- Week 1: Days 1-5
+- Week 2: Days 6-12
+- Week 3: Days 13-19
+
+A revised validation formula was applied:
+
+expected_week = ((DAY + 1) // 7) + 1
+
+The revised validation produced zero mismatches across all 2,595,732 transaction records.
+
+### Interpretation
+
+DAY and WEEK_NO are internally consistent under the observed reporting-week convention.
+
+The first reporting week contains only five observed days rather than seven.
+
+### Data Quality Decision
+
+- Retain the original DAY and WEEK_NO columns.
+- Use the validated week mapping for time-based analysis.
+- Do not assume DAY represents a calendar date.
+- No correction is required.
+ 
+### Status
+
+Validated. No cleaning transformation required.
