@@ -153,3 +153,56 @@ The cause of these zero-sales transactions cannot be established from the availa
 ### Status
 
 Investigated. No cleaning transformation applied.
+
+## Finding 4: Discount Values and Floating-Point Precision
+
+### Observation
+
+Three discount columns were investigated:
+
+- RETAIL_DISC
+- COUPON_DISC
+- COUPON_MATCH_DISC
+
+Nonzero discount amounts are predominantly negative.
+
+### Discount Distribution
+
+| Column | Negative | Zero | Positive |
+|---|---:|---:|---:|
+| RETAIL_DISC | 1,303,026 | 1,292,670 | 36 |
+| COUPON_DISC | 36,422 | 2,559,310 | 0 |
+| COUPON_MATCH_DISC | 17,449 | 2,578,283 | 0 |
+
+### Investigation of Positive Retail Discounts
+
+Of the 36 positive RETAIL_DISC values:
+
+- 26 round to zero at two decimal places.
+- 10 remain positive after rounding to two decimal places.
+
+The 26 extremely small positive values are consistent with floating-point precision artefacts.
+
+Further investigation identified a relationship between positive retailer discounts and zero-quantity records.
+
+However, the precise amounting meaning of these transactions remains unconfirmed.
+
+### Interpretation
+
+Negative values appear to be the normal convention for recording discounts in this dataset.
+
+Most raw positive retailer discount values are negligible at cent precision.
+
+The remaining 10 positive values require further investigation and should not automatically be classified as errors.
+
+### Data Quality Decision
+
+- Preserve original monetary values in the raw data.
+- Use cent-level precision for monetary comparisons.
+- Flag meaningful positive retailer discounts.
+- Do not automatically reverse discount signs.
+- Retain all records unless further evidence supports a cleaning transformation.
+
+### Status
+
+Investigated. No cleaning transformation applied.
