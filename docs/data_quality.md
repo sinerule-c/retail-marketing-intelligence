@@ -251,3 +251,38 @@ The first reporting week contains only five observed days rather than seven.
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 6: Transaction Time Validation
+
+### Observation
+
+The TRANS_TIME column records transaction times in HHMM format.
+
+- Minimum time: 0000 (12:00 AM)
+- Maximum time: 2359 (11:59 PM)
+
+### Validation
+
+Transaction times were separated into hours and minutes using integer division and modulo.
+
+Validation rules:
+- Hours must be between 0 and 23.
+- Minutes must be between 0 and 59.
+
+Results: 0 invalid transaction times across 2,595,732 records.
+
+### Interpretation
+
+All recorded transaction times satisfy the expected HHMM format.
+
+This validates the format but does not independently verify the accuracy of each recorded time.
+
+### Data Quality Decision
+
+- Retain the original TRANS_TIME column.
+- No cleaning transformation is required.
+- Derive hour-based variables when needed for future customer behaviour analysis.
+
+### Status
+
+Validated. No cleaning transformation required.
