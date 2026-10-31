@@ -349,3 +349,23 @@ week_mismatch = df["WEEK_NO"] != expected_week
 
 print("\nREVISED WEEK VALIDATION:")
 print("Mismatched records:", week_mismatch.sum())
+
+# 29. Validate transaction times
+
+print("\nTRANSACTION TIME SUMMARY:")
+print("Minimum:", df["TRANS_TIME"].min())
+print("Maximum:", df["TRANS_TIME"].max())
+
+# Extract hours and minutes
+hours = df["TRANS_TIME"] // 100
+minutes = df["TRANS_TIME"] % 100
+
+# Identify invalid times
+invalid_time = (
+    (hours < 0) |
+    (hours > 23) |
+    (minutes < 0) |
+    (minutes > 59)
+)
+
+print("Invalid transaction times:", invalid_time.sum())
