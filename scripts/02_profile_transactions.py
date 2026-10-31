@@ -311,3 +311,41 @@ print("Positive discounts before rounding:", (retail_disc > 0).sum())
 print("Positive discounts after rounding:", (retail_disc.round(2) > 0).sum())
 
 print("Tiny positive discounts:", ((retail_disc > 0) & (retail_disc.round(2) == 0)).sum())
+
+# 25. Investigate transaction day and week ranges
+
+for col in ["DAY", "WEEK_NO"]:
+    print(f"\n{col} SUMMARY:")
+    print("Minimum:", df[col].min())
+    print("Maximum:", df[col].max())
+    print("Unique values:", df[col].nunique())
+    print("Zero or negative values:", (df[col] <= 0).sum())
+
+# 26. Check consistency between DAY and WEEK_NO
+
+expected_week = ((df["DAY"] - 1) // 7) + 1
+
+week_mismatch = df["WEEK_NO"] != expected_week
+
+print("\nDAY AND WEEK CONSISTENCY:")
+print("Mismatched records:", week_mismatch.sum())
+
+# 27. Investigate actual week boundaries
+
+week_ranges = df.groupby("WEEK_NO")["DAY"].agg(
+    first_day="min",
+    last_day="max",
+    observed_days="nunique"
+)
+
+print("\nACTUAL WEEK BOUNDARIES:")
+print(week_ranges.head(10))
+
+# 28. Validate DAY and WEEK_NO using observed week boundaries
+
+expected_week = ((df["DAY"] + 1) // 7) + 1
+
+week_mismatch = df["WEEK_NO"] != expected_week
+
+print("\nREVISED WEEK VALIDATION:")
+print("Mismatched records:", week_mismatch.sum())
