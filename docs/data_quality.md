@@ -351,3 +351,35 @@ The demographic subset may not be representative of the full purchasing populati
 ### Status
 
 Validated. Demographic coverage limitation documented. No records removed.
+
+## Finding 9: Shopping Basket Consistency
+
+### Objective
+
+Validate whether BASKET_ID consistently identifies a single shopping event.
+
+### Validation Results
+
+- Total unique baskets: 276,484
+- Baskets associated with multiple households: 0
+- Baskets associated with multiple days: 0
+- Baskets associated with multiple stores: 0
+- Baskets associated with multiple checkout times: 0
+
+### Interpretation
+
+Each basket ID is associated with exactly one household, day, store, and recorded checkout time.
+
+These findings support using BASKET_ID as the identifier for individual shopping events.
+
+### Data Quality Decision
+
+- Retain all basket IDs.
+- Use BASKET_ID to aggregate product-line transactions into basket-level records.
+- Count distinct BASKET_ID values when calculating shopping frequency.
+- Validate basket-level sales aggregations before calculating business KPIs.
+- Consider special transaction types when interpreting basket-level metrics.
+
+### Status
+
+Validated. No cleaning transformation required.
