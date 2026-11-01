@@ -85,3 +85,54 @@ print(campaign_summary.sort_values(
     "duplicate_rate_pct", 
     ascending=False).head(10).to_string()
 )
+
+# 5. Inspect coupon redemption dataset
+
+redemptions = pd.read_csv("data/raw/coupon_redempt.csv")
+
+print("\nCOUPON REDEMPTION DATASET:")
+
+print("Dataset dimensions:")
+print(redemptions.shape)
+
+print("\nColumn names:")
+print(redemptions.columns.tolist())
+
+print("\nFirst 10 rows:")
+print(redemptions.head(10).to_string(index=False))
+
+print("\nData types:")
+print(redemptions.dtypes)
+
+# 6. Validate coupon redemption granularity
+
+print("\nCOUPON REDEMPTION GRANULARITY:")
+
+print("Unique households:", redemptions["household_key"].nunique())
+
+print("Unique redeemed coupons:", redemptions["COUPON_UPC"].nunique())
+
+print("Unique campaigns:", redemptions["CAMPAIGN"].nunique())
+
+print("Exact duplicate redemption records:", redemptions.duplicated().sum())
+
+# 7. Validate redeemed coupon-campaign combinations
+
+eligible_pairs = coupons[["COUPON_UPC", "CAMPAIGN"]].drop_duplicates()
+
+redemption_check = redemptions.merge(
+    eligible_pairs,
+    on=["COUPON_UPC", "CAMPAIGN"],
+    how="left",
+    indicator=True,
+    validate="many_to_one"
+)
+
+unmatched = redemption_check["_merge"] == "left_only"
+
+print("\nCOUPON REDEMPTION REFERENTIAL INTEGRITY:")
+
+print("Redemption rows with unmatched coupon-campaign pairs:", unmatched.sum())
+
+print("Distinct unmatched coupon-campaign pairs:",
+      redemption_check.loc[unmatched, ["COUPON_UPC", "CAMPAIGN"]].drop_duplicates().shape[0])
