@@ -619,3 +619,36 @@ Redemption timing has not yet been validated against campaign schedules.
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 16: Coupon Redemption Date Validation
+
+### Objective
+
+Validate whether recorded coupon redemptions occur within their associated campaign periods.
+
+### Validation Results
+
+- Total redemption records: 2,318
+- Redemptions with missing campaign schedules: 0
+- Redemptions before campaign start: 0
+- Redemptions after campaign end: 0
+
+### Interpretation
+
+All coupon redemption records have matching campaign schedules.
+
+Every recorded redemption falls within its associated campaign period, including the campaign start and end days.
+
+No out-of-period redemptions were identified.
+
+### Data Quality Decision
+
+- Retain all redemption records.
+- Preserve original redemption dates.
+- No date correction or record removal required.
+- Use campaign schedules to define campaign observation periods in future analysis.
+- Do not assume that valid redemption timing establishes a direct link to a specific shopping basket or product purchase.
+
+### Status
+
+Validated. No cleaning transformation required.
