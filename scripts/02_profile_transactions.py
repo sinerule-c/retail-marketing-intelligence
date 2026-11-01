@@ -405,3 +405,19 @@ print("Duplicate household IDs in demographics:", demographics["household_key"].
 print("Purchasing households with demographics:", has_demographics.sum())
 
 print("Purchasing households without demographics:", (~has_demographics).sum())
+
+# 32. Validate shopping basket consistency
+
+basket_checks = df.groupby("BASKET_ID")[["household_key", "DAY", "STORE_ID", "TRANS_TIME"]].nunique()
+
+print("\nBASKET CONSISTENCY CHECK:")
+
+print("Total unique baskets:", df["BASKET_ID"].nunique())
+
+print("Baskets with multiple households:", (basket_checks["household_key"] > 1).sum())
+
+print("Baskets with multiple days:", (basket_checks["DAY"] > 1).sum())
+
+print("Baskets with multiple stores:", (basket_checks["STORE_ID"] > 1).sum())
+
+print("Baskets with multiple checkout times:", (basket_checks["TRANS_TIME"] > 1).sum())
