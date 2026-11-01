@@ -136,3 +136,45 @@ print("Redemption rows with unmatched coupon-campaign pairs:", unmatched.sum())
 
 print("Distinct unmatched coupon-campaign pairs:",
       redemption_check.loc[unmatched, ["COUPON_UPC", "CAMPAIGN"]].drop_duplicates().shape[0])
+
+# 8. Validate coupon redemption households
+
+transactions = pd.read_csv("data/raw/transaction_data.csv", usecols=["household_key"])
+
+campaigns = pd.read_csv("data/raw/campaign_table.csv", usecols=["household_key"])
+
+# Get unique household IDs
+redemption_households = redemptions["household_key"].drop_duplicates()
+
+purchase_households = transactions["household_key"].drop_duplicates()
+
+campaign_households = campaigns["household_key"].drop_duplicates()
+
+print("\nREDEMPTION HOUSEHOLD VALIDATION:")
+
+print("Unique redeeming households:", len(redemption_households))
+
+print("Redeeming households absent from transactions:", (~redemption_households.isin(purchase_households)).sum())
+
+print("Redeeming households absent from campaign assignments:", (~redemption_households.isin(campaign_households)).sum())
+
+# 9. Validate redemption household-campaign assignments
+
+assignments = pd.read_csv("data/raw/campaign_table.csv", usecols=["household_key", "CAMPAIGN"]).drop_duplicates()
+
+assignment_check = redemptions.merge(
+    assignments,
+    on=["household_key", "CAMPAIGN"],
+    how="left",
+    indicator=True,
+    validate="many_to_one"
+)
+
+unmatched_assignments = (assignment_check["_merge"] == "left_only")
+
+print("\nREDEMPTION CAMPAIGN ASSIGNMENT VALIDATION:")
+
+print("Redemption rows without matching household-campaign assignments:", unmatched_assignments.sum())
+
+print("Distinct unmatched household-campaign pairs:",
+      assignment_check.loc[unmatched_assignments, ["household_key", "CAMPAIGN"]].drop_duplicates().shape[0])
