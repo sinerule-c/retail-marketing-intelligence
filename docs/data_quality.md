@@ -491,3 +491,55 @@ The relationship between campaign assignments and campaign descriptions is many-
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 13: Duplicate Coupon Eligibility Records
+
+### Objective
+
+Investigate repeated coupon-product-campaign combinations in coupon.csv and assess their potential impact on downstream analysis.
+
+### Validation Results
+
+- Total coupon records: 124,548
+- Unique coupon IDs: 1,135
+- Unique products: 44,133
+- Unique campaigns: 30
+- Additional duplicate combinations: 5,164
+- Distinct combinations repeated: 1,824
+- Maximum occurrences of one combination: 19
+- Overall duplicate rate: 4.15%
+- Unique coupon-product-campaign combinations: 119,384
+
+### Campaign-Level Findings
+
+Duplication is concentrated in eight campaigns.
+
+- Campaign 27: 3,391 extra rows (78.46%)
+- Campaign 30: 576 extra rows (14.03%)
+- Campaign 26: 292 extra rows (7.80%)
+- Campaign 8: 608 extra rows (3.17%)
+
+Campaign 27 has the highest duplicate count and rate.
+
+### Interpretation
+
+The coupon dataset contains repeated identical coupon-product-campaign relationships.
+
+These repetitions could inflate relationship counts and multiply records during joins.
+
+The underlying cause of the repetitions has not been established.
+
+### Data Quality Decision
+
+- Preserve the original coupon.csv unchanged.
+- Create a distinct coupon-product-campaign eligibility table for relationship-based analysis.
+- Retain one record per unique combination of COUPON_UPC, PRODUCT_ID, and CAMPAIGN.
+- Do not interpret repeated rows as additional coupons, products, or redemptions.
+- Preserve duplicate counts for auditing.
+- Validate row counts after downstream joins.
+
+### Status
+
+Duplicate patterns investigated.
+Analytical deduplication recommended.
+No raw records removed.
