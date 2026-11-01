@@ -543,3 +543,40 @@ The underlying cause of the repetitions has not been established.
 Duplicate patterns investigated.
 Analytical deduplication recommended.
 No raw records removed.
+
+## Finding 14: Coupon Redemption Referential Integrity
+
+### Objective
+
+Validate recorded coupon redemptions against coupon-campaign relationships in coupon.csv.
+
+### Validation Results
+
+- Total redemption records: 2,318
+- Unique redeeming households: 434
+- Unique redeemed coupon IDs: 556
+- Unique campaigns represented: 30
+- Exact duplicate redemption records: 0
+- Redemption rows with unmatched coupon-campaign pairs: 0
+- Distinct unmatched coupon-campaign pairs: 0
+
+### Interpretation
+
+All recorded coupon redemptions reference valid coupon-campaign combinations in coupon.csv.
+
+Coupon eligibility data contains multiple product records per coupon. Distinct coupon-campaign pairs were therefore used for referential validation.
+
+No unmatched coupon-campaign relationships were found.
+
+### Data Quality Decision
+
+- Preserve all redemption records.
+- Retain the original redemption dataset unchanged.
+- Use COUPON_UPC and CAMPAIGN together to validate redemption-to-eligibility relationships.
+- Deduplicate the coupon-campaign lookup before joins.
+- Avoid multiplying redemption counts when joining to product-level coupon eligibility data.
+- Do not assume that eligibility establishes actual household-level coupon exposure.
+
+### Status
+
+Validated. No cleaning transformation required.
