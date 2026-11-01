@@ -419,3 +419,75 @@ However, assignment does not establish actual campaign exposure or campaign-driv
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 11: Campaign Schedule Validation
+
+### Objective
+
+Validate campaign schedule consistency and assess coverage relative to the transaction observation period.
+
+### Validation Results
+
+- Total campaigns: 30
+- Duplicate campaign IDs: 0
+- Campaigns starting after their end day: 0
+- Last observed transaction day: 711
+- Campaigns ending after transaction coverage: 1
+
+### Interpretation
+
+Campaign IDs are unique, and no campaign has a start day later than its end day.
+
+Campaign 24 runs from Day 659 to Day 719, but transaction records are available only through Day 711.
+
+The final eight days of Campaign 24 fall outside the observed transaction period.
+
+This is an observation coverage limitation rather than necessarily an invalid campaign schedule.
+
+### Data Quality Decision
+
+- Retain all campaign records.
+- Preserve original START_DAY and END_DAY values.
+- Flag campaigns extending beyond transaction coverage.
+- Do not interpret unobserved days as zero sales.
+- Account for incomplete observation windows when comparing campaign performance.
+- Use comparable observation periods where appropriate.
+
+### Status
+
+Validated. One campaign has incomplete transaction coverage. No records removed.
+
+## Finding 12: Campaign Referential Integrity
+
+### Objective
+
+Validate the relationship between campaign_table.csv and campaign_desc.csv using CAMPAIGN.
+
+### Validation Results
+
+- Total campaign assignment records: 7,208
+- Unique campaign IDs: 30
+- Duplicate campaign IDs in campaign_desc.csv: 0
+- Assignment rows with unmatched campaigns: 0
+- Distinct unmatched campaign IDs: 0
+- Assignment rows with mismatched campaign types: 0
+
+### Interpretation
+
+All campaign assignments reference valid campaign IDs.
+
+Campaign descriptions are consistent across the assignment and campaign description datasets.
+
+The relationship between campaign assignments and campaign descriptions is many-to-one.
+
+### Data Quality Decision
+
+- Retain all campaign assignment records.
+- Use CAMPAIGN as the join key.
+- Preserve the 7,208 assignment records when enriching them with campaign descriptions.
+- Validate row counts after joining the tables.
+- No campaign ID or description corrections required.
+
+### Status
+
+Validated. No cleaning transformation required.
