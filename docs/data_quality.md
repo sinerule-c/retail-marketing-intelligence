@@ -580,3 +580,42 @@ No unmatched coupon-campaign relationships were found.
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 15: Redemption Household and Campaign Assignment Integrity
+
+### Objective
+
+Validate whether households with recorded coupon redemptions exist in transaction_data.csv and have matching household-campaign assignments in campaign_table.csv.
+
+### Validation Results
+
+- Total redemption records: 2,318
+- Unique redeeming households: 434
+- Redeeming households absent from transactions: 0
+- Redeeming households absent from campaign assignments: 0
+- Redemption rows without matching household-campaign assignments: 0
+- Distinct unmatched household-campaign pairs: 0
+
+### Interpretation
+
+All redeeming households appear in the transaction dataset and campaign assignment dataset.
+
+Every recorded coupon redemption matches a valid household-campaign assignment.
+
+This supports linking redemption activity to household purchasing behaviour and campaign participation.
+
+However, campaign assignment consistency does not establish actual marketing exposure or a causal effect on purchasing behaviour.
+
+Redemption timing has not yet been validated against campaign schedules.
+
+### Data Quality Decision
+
+- Preserve all redemption records
+- Use household_key and CAMPAIGN together to validate redemption campaign assignments.
+- Retain the original source data unchanged.
+- No household or campaign assignment corrections are required.
+- Validate redemption dates against campaign schedules in a subsequent check.
+
+### Status
+
+Validated. No cleaning transformation required.
