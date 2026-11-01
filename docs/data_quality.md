@@ -652,3 +652,64 @@ No out-of-period redemptions were identified.
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 17: Promotional Data Key and Code Consistency
+
+### Objective
+
+Assess the completeness, uniqueness, and consistency of promotional information in causal_data.csv.
+
+### Dataset Overview
+
+- Total records: 36,786,524
+- Observation weeks: 9-101
+- Unique weeks: 93
+- Missing PRODUCT_ID: 0
+- Missing STORE_ID: 0
+- Missing WEEK_NO: 0
+- Missing display codes: 0
+- Missing mailer codes: 0
+
+### Key Uniqueness Results
+
+- Unique product-store-week combinations: 36,771,279
+- Additional records sharing these keys: 15,245
+- Product-store-week groups with multiple records: 15,245
+- Exact duplicate full rows: 0
+
+Every repeated product-store-week group contains exactly two distinct promotional code combinations.
+
+### Promotional Code Differences
+
+Among the 15,245 repeated key groups:
+
+- Display differs only: 15,140 (99.31%)
+- Mailer differs only: 37 (0.24%)
+- Both display and mailer differ: 68 (0.45%)
+
+### Interpretation
+
+The combination of PRODUCT_ID, STORE_ID, and WEEK_NO does not uniquely identify every source record.
+
+Repeated keys contain distinct promotional code combinations rather than exact duplicate rows.
+
+Most variation occurs in display codes.
+
+The underlying reason for multiple promotional codes within a product-store-week is not established.
+
+### Data Quality Decision
+
+- Preserve all original promotional records.
+- Do not arbitrarily remove repeated product-store-week keys.
+- Treat display and mailer as categorical variables.
+- Investigate suitable ways to represent multiple promotional codes in analytical tables.
+- Consider code-specific indicators when constructing one record per product-store-week.
+- Prevent transaction multiplication during SQL joins.
+- Treat missing promotional records as unknown, not automatically as no promotion.
+
+### Status
+
+Validated. Multiple promotional code combinations identified and documented.
+
+No raw records removed.
+Analytical transformation to be designed later.
