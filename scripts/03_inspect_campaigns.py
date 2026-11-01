@@ -69,3 +69,31 @@ last_transaction_day = pd.read_csv("data/raw/transaction_data.csv", usecols=["DA
 print("Last observed transaction day:", last_transaction_day)
 
 print("Campaigns ending after transaction coverage:", (campaign_desc["END_DAY"] > last_transaction_day).sum())
+
+# Validate campaign relationships across tables
+
+campaign_check = campaigns.merge(
+    campaign_desc[["CAMPAIGN", "DESCRIPTION"]],
+    on="CAMPAIGN",
+    how="left",
+    suffixes=("_assignment", "_schedule"),
+    indicator=True,
+    validate="many_to_one"
+)
+
+# Check unmatched campaign IDs
+unmatched = campaign_check["_merge"] == "left_only"
+
+# Compare campaign descriptions for matched IDs
+type_mismatch = (
+    (campaign_check["_merge"] == "both") &
+    (campaign_check["DESCRIPTION_assignment"] != campaign_check["DESCRIPTION_schedule"])
+)
+
+print("\nCAMPAIGN REFERENTIAL INTEGRITY:")
+
+print("Assignment rows with unmatched campaigns:", unmatched.sum())
+
+print("Distinct unmatched campaign IDs:", campaign_check.loc[unmatched, "CAMPAIGN"].nunique())
+
+print("Assignment rows with mismatched campaign types:", type_mismatch.sum())
