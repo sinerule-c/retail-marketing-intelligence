@@ -419,3 +419,40 @@ However, assignment does not establish actual campaign exposure or campaign-driv
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 11: Campaign Schedule Validation
+
+### Objective
+
+Validate campaign schedule consistency and assess coverage relative to the transaction observation period.
+
+### Validation Results
+
+- Total campaigns: 30
+- Duplicate campaign IDs: 0
+- Campaigns starting after their end day: 0
+- Last observed transaction day: 711
+- Campaigns ending after transaction coverage: 1
+
+### Interpretation
+
+Campaign IDs are unique, and no campaign has a start day later than its end day.
+
+Campaign 24 runs from Day 659 to Day 719, but transaction records are available only through Day 711.
+
+The final eight days of Campaign 24 fall outside the observed transaction period.
+
+This is an observation coverage limitation rather than necessarily an invalid campaign schedule.
+
+### Data Quality Decision
+
+- Retain all campaign records.
+- Preserve original START_DAY and END_DAY values.
+- Flag campaigns extending beyond transaction coverage.
+- Do not interpret unobserved days as zero sales.
+- Account for incomplete observation windows when comparing campaign performance.
+- Use comparable observation periods where appropriate.
+
+### Status
+
+Validated. One campaign has incomplete transaction coverage. No records removed.
