@@ -383,3 +383,25 @@ missing_products = ~df["PRODUCT_ID"].isin(products["PRODUCT_ID"])
 print("Transaction rows with unmatched product IDs:", missing_products.sum())
 
 print("Distinct unmatched product IDs:", df.loc[missing_products, "PRODUCT_ID"].nunique())
+
+# 31. Validate household demographic coverage
+
+demographics = pd.read_csv("data/raw/hh_demographic.csv")
+
+# Find unique households in transaction data
+transaction_households = df["household_key"].drop_duplicates()
+
+# Identify which households have demographic records
+has_demographics = transaction_households.isin(demographics["household_key"])
+
+print("\nHOUSEHOLD DEMOGRAPHIC COVERAGE:")
+
+print("Unique purchasing households:", len(transaction_households))
+
+print("Households in demographic dataset:", demographics["household_key"].nunique())
+
+print("Duplicate household IDs in demographics:", demographics["household_key"].duplicated().sum())
+
+print("Purchasing households with demographics:", has_demographics.sum())
+
+print("Purchasing households without demographics:", (~has_demographics).sum())
