@@ -37,3 +37,35 @@ print("\nCAMPAIGN HOUSEHOLD VALIDATION:")
 print("Campaign households absent from transactions:", (~pd.Series(campaign_ids).isin(purchase_ids)).sum())
 
 print("Purchasing households without campaign assignments:", (~pd.Series(purchase_ids).isin(campaign_ids)).sum())
+
+# Inspect campaigm descriptions and timing
+
+campaign_desc = pd.read_csv("data/raw/campaign_desc.csv")
+
+print("\nCAMPAIGN DESCRIPTION DATASET:")
+
+print("Dataset dimensions:", campaign_desc.shape)
+
+print("\nColumn names:")
+print(campaign_desc.columns.tolist())
+
+print("\nFirst 10 rows:")
+print(campaign_desc.head(10).to_string(index=False))
+
+print("\nData types:")
+print(campaign_desc.dtypes)
+
+# Validate campaign schedules
+
+print("\nCAMPAIGN SCHEDULE VALIDATION:")
+
+print("Duplicate campaign IDs:", campaign_desc["CAMPAIGN"].duplicated().sum())
+
+print("Campaigns starting after their end day", (campaign_desc["START_DAY"] > campaign_desc["END_DAY"]).sum())
+
+# Compare campaign schedules with transaction coverage
+last_transaction_day = pd.read_csv("data/raw/transaction_data.csv", usecols=["DAY"])["DAY"].max()
+
+print("Last observed transaction day:", last_transaction_day)
+
+print("Campaigns ending after transaction coverage:", (campaign_desc["END_DAY"] > last_transaction_day).sum())
