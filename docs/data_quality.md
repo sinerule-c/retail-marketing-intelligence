@@ -383,3 +383,39 @@ These findings support using BASKET_ID as the identifier for individual shopping
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 10: Campaign Household Referential Integrity
+
+### Objective
+
+Validate the relationship between campaign_table.csv and transaction_data.csv using household_key.
+
+### Validation Results
+
+- Total purchasing households: 2,500
+- Households assigned to campaigns: 1,584
+- Campaign households absent from transactions: 0
+- Purchasing households without campaign assignments: 916
+- Purchasing household campaign coverage: 63.36%
+
+### Interpretation
+
+All households assigned to marketing campaigns have corresponding transaction records.
+
+916 purchasing households have no recorded campaign assignment.
+
+The dataset supports linking campaign assignments with household purchasing behaviour.
+
+However, assignment does not establish actual campaign exposure or campaign-driven purchases.
+
+### Data Quality Decision
+
+- Retain all household records.
+- Preserve households without campaign assignments.
+- Use household-key to link campaign assignments with purchasing activity.
+- Do not automatically treat unassigned households as a randomised control group.
+- Account for potential selection bias when evaluating campaign effectiveness.
+
+### Status
+
+Validated. No cleaning transformation required.
