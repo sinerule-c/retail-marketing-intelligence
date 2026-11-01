@@ -317,3 +317,37 @@ These findings indicate that joining the tables on PRODUCT_ID should not introdu
 ### Status
 
 Validated. No cleaning transformation required.
+
+## Finding 8: Household Demographic Coverage
+
+### Objective
+
+Assess the availability and uniqueness of household demographic information.
+
+### Validation Results
+
+- Unique purchasing households: 2,500
+- Households with demographic records: 801
+- Duplicate demographic household IDs: 0
+- Purchasing households without demographics: 1,699
+- Demographic coverage: 32.04%
+
+### Interpretation
+
+Demographic information is available for only 32.04% of purchasing households.
+
+All 801 demographic household IDs correspond to households in the transaction dataset.
+
+The demographic subset may not be representative of the full purchasing population.
+
+### Data Quality Decision
+
+- Retain all 2,500 purchasing households.
+- Do not impute missing demographic categories without a justified methodology.
+- Use LEFT JOIN when demographic enrichment should preserve all transaction records.
+- Restrict demographic analyses to households with available information.
+- Clearly report sample sizes and limitations.
+
+### Status
+
+Validated. Demographic coverage limitation documented. No records removed.
