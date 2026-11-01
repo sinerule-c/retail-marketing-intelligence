@@ -456,3 +456,38 @@ This is an observation coverage limitation rather than necessarily an invalid ca
 ### Status
 
 Validated. One campaign has incomplete transaction coverage. No records removed.
+
+## Finding 12: Campaign Referential Integrity
+
+### Objective
+
+Validate the relationship between campaign_table.csv and campaign_desc.csv using CAMPAIGN.
+
+### Validation Results
+
+- Total campaign assignment records: 7,208
+- Unique campaign IDs: 30
+- Duplicate campaign IDs in campaign_desc.csv: 0
+- Assignment rows with unmatched campaigns: 0
+- Distinct unmatched campaign IDs: 0
+- Assignment rows with mismatched campaign types: 0
+
+### Interpretation
+
+All campaign assignments reference valid campaign IDs.
+
+Campaign descriptions are consistent across the assignment and campaign description datasets.
+
+The relationship between campaign assignments and campaign descriptions is many-to-one.
+
+### Data Quality Decision
+
+- Retain all campaign assignment records.
+- Use CAMPAIGN as the join key.
+- Preserve the 7,208 assignment records when enriching them with campaign descriptions.
+- Validate row counts after joining the tables.
+- No campaign ID or description corrections required.
+
+### Status
+
+Validated. No cleaning transformation required.
