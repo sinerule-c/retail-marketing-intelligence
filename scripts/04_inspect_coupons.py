@@ -178,3 +178,37 @@ print("Redemption rows without matching household-campaign assignments:", unmatc
 
 print("Distinct unmatched household-campaign pairs:",
       assignment_check.loc[unmatched_assignments, ["household_key", "CAMPAIGN"]].drop_duplicates().shape[0])
+
+# 10. Validate redemption dates against campaign schedules
+
+campaign_dates = pd.read_csv("data/raw/campaign_desc.csv", usecols=["CAMPAIGN", "START_DAY", "END_DAY"])
+
+redemption_timing = redemptions.merge(
+    campaign_dates,
+    on="CAMPAIGN",
+    how="left",
+    indicator=True,
+    validate="many_to_one"
+)
+
+# Check whether campaign schedules were found
+missing_schedule = redemption_timing["_merge"] == "left_only"
+
+# Compare redemption days with campaign periods
+before_start = (
+    (redemption_timing["_merge"] == "both") &
+    (redemption_timing["DAY"] < redemption_timing["START_DAY"])
+)
+
+after_end = (
+    (redemption_timing["_merge"] == "both") &
+    (redemption_timing["DAY"] > redemption_timing["END_DAY"])
+)
+
+print("\nREDEMPTION DATE VALIDATION:")
+
+print("Redemptions with missing campaign schedules:", missing_schedule.sum())
+
+print("Redemptions before campaign start:", before_start.sum())
+
+print("Redemptions after campaign end:", after_end.sum())
